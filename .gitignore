@@ -1,0 +1,7 @@
+content*
+*dialogues
+*.zip
+*.code-workspace
+*.wav
+output*
+ffmpeg*

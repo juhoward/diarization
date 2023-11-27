@@ -1,0 +1,4 @@
+pydub
+yt-dlp
+pydub
+light-the-torch
