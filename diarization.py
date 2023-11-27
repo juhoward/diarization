@@ -5,6 +5,12 @@ from pathlib import Path
 from yt_dlp import YoutubeDL
 import locale
 import os
+import re
+import whisper
+import torch
+import json
+import json
+from datetime import timedelta
 
 # video_url = "https://youtu.be/hpZFJctBUHQ"
 # video_url ="https://youtu.be/YqL6IMGE5os"
@@ -35,36 +41,36 @@ video_id = ""
 # os.system(f"yt-dlp -xv --ffmpeg-location ffmpeg-master-latest-linux64-gpl/bin --audio-format wav  -o {str(output_path) + '/'}input.wav -- {video_url}")
 
 spacermilli = 2000
-spacer = AudioSegment.silent(duration=spacermilli)
+# spacer = AudioSegment.silent(duration=spacermilli)
 
 
-audio = AudioSegment.from_wav("./content10/transcript/input.wav") 
+# audio = AudioSegment.from_wav("./content10/transcript/input.wav") 
 
-audio = spacer.append(audio, crossfade=0)
+# audio = spacer.append(audio, crossfade=0)
 
-audio.export('input_prep.wav', format='wav')
+# audio.export('input_prep.wav', format='wav')
 
-access_token = "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"
-pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.0', use_auth_token= (access_token) or True )
+# access_token = "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"
+# pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.0', use_auth_token= (access_token) or True)
 
-import torch
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-pipeline.to(device)
 
-DEMO_FILE = {'uri': 'blabla', 'audio': 'input_prep.wav'}
-dz = pipeline(DEMO_FILE)  
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# pipeline.to(device)
 
-with open("./content/diarization.txt", "w") as text_file:
-    text_file.write(str(dz))
+# DEMO_FILE = {'uri': 'blabla', 'audio': 'input_prep.wav', 'num_speakers':2}
+# dz = pipeline(DEMO_FILE)  
 
-print(*list(dz.itertracks(yield_label = True))[:10], sep="\n")
+# with open("./content/diarization.txt", "w") as text_file:
+#     text_file.write(str(dz))
+
+# print(*list(dz.itertracks(yield_label = True))[:10], sep="\n")
 
 def millisec(timeStr):
   spl = timeStr.split(":")
   s = (int)((int(spl[0]) * 60 * 60 + int(spl[1]) * 60 + float(spl[2]) )* 1000)
   return s
 
-import re
+
 dzs = open('./content/diarization.txt').read().splitlines()
 
 groups = []
@@ -100,13 +106,13 @@ for g in groups:
   audio[start:end].export('./content/' + str(gidx) + '.wav', format='wav')
   print(f"group {gidx}: {start}--{end}")
 
-del   DEMO_FILE, pipeline, spacer,  audio, dz
+# del   DEMO_FILE, pipeline, spacer,  audio, dz
 
-import whisper
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = whisper.load_model('large', device = device)
 
-import json
+
 for i in range(len(groups)):
   audiof = './content/' + str(i) + '.wav'
   result = model.transcribe(audio=audiof, language='en', word_timestamps=True)#, initial_prompt=result.get('text', ""))
@@ -177,13 +183,12 @@ preS = f'<!DOCTYPE html>\n<html lang="en">\n\n<head>\n\t<meta charset="UTF-8">\n
     '<div id="player"></div>\n\t\t<div><label for="autoscroll">auto-scroll: </label>\n\t\t\t'\
     '<input type="checkbox" id="autoscroll" checked>\n\t\t</div>\n\t</div>\n  '
 postS = '\t</body>\n</html>'
-import json
-from datetime import timedelta
+
 
 def timeStr(t):
   return '{0:02d}:{1:02d}:{2:06.2f}'.format(round(t // 3600), 
-                                                round(t % 3600 // 60), 
-                                                t % 60)
+                                            round(t % 3600 // 60), 
+                                            t % 60)
 
 html = list(preS)
 txt = list("")

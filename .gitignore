@@ -5,3 +5,5 @@ content*
 *.wav
 output*
 ffmpeg*
+env
+.gitignore

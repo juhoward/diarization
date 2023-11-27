@@ -1,4 +1,8 @@
+python==3.11
 pydub
 yt-dlp
-pydub
+pyannote.audio
 light-the-torch
+onnxruntime
+yt_dlp
+whisper @ git+https://github.com/openai/whisper.git
