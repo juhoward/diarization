@@ -26,6 +26,11 @@ output_path = "./content/transcript/" #@param {type:"string"}
 output_path = str(Path(output_path))
 audio_title = "Sample Order Taking" #@param {type:"string"}
 
+def millisec(timeStr):
+  spl = timeStr.split(":")
+  s = (int)((int(spl[0]) * 60 * 60 + int(spl[1]) * 60 + float(spl[2]) )* 1000)
+  return s
+
 locale.getpreferredencoding = lambda: "UTF-8"
 Path(output_path).mkdir(parents=True, exist_ok=True)
 video_title = ""
@@ -41,35 +46,23 @@ video_id = ""
 # os.system(f"yt-dlp -xv --ffmpeg-location ffmpeg-master-latest-linux64-gpl/bin --audio-format wav  -o {str(output_path) + '/'}input.wav -- {video_url}")
 
 spacermilli = 2000
-# spacer = AudioSegment.silent(duration=spacermilli)
+spacer = AudioSegment.silent(duration=spacermilli)
+audio = AudioSegment.from_wav("./content2/transcript/input.wav") 
+audio = spacer.append(audio, crossfade=0)
+audio.export('input_prep.wav', format='wav')
 
+access_token = "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"
+pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.1', use_auth_token= (access_token) or True)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+pipeline.to(device)
 
-# audio = AudioSegment.from_wav("./content10/transcript/input.wav") 
+DEMO_FILE = {'uri': 'blabla', 'audio': 'input_prep.wav', 'num_speakers':2}
+dz = pipeline(DEMO_FILE)  
 
-# audio = spacer.append(audio, crossfade=0)
+with open("./content/diarization.txt", "w") as text_file:
+    text_file.write(str(dz))
 
-# audio.export('input_prep.wav', format='wav')
-
-# access_token = "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"
-# pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization-3.0', use_auth_token= (access_token) or True)
-
-
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# pipeline.to(device)
-
-# DEMO_FILE = {'uri': 'blabla', 'audio': 'input_prep.wav', 'num_speakers':2}
-# dz = pipeline(DEMO_FILE)  
-
-# with open("./content/diarization.txt", "w") as text_file:
-#     text_file.write(str(dz))
-
-# print(*list(dz.itertracks(yield_label = True))[:10], sep="\n")
-
-def millisec(timeStr):
-  spl = timeStr.split(":")
-  s = (int)((int(spl[0]) * 60 * 60 + int(spl[1]) * 60 + float(spl[2]) )* 1000)
-  return s
-
+print(*list(dz.itertracks(yield_label = True))[:10], sep="\n")
 
 dzs = open('./content/diarization.txt').read().splitlines()
 
@@ -106,7 +99,7 @@ for g in groups:
   audio[start:end].export('./content/' + str(gidx) + '.wav', format='wav')
   print(f"group {gidx}: {start}--{end}")
 
-# del   DEMO_FILE, pipeline, spacer,  audio, dz
+del DEMO_FILE, pipeline, spacer,  audio, dz
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
