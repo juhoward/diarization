@@ -7,3 +7,15 @@ output*
 ffmpeg*
 env
 .gitignore
+Llama-2*
+openchat-3.5*
+*early-stop
+__pycache__
+~
+voicefixer
+checkpoints
+.goutputsteam-OUL4E2
+.goutputstream-OUL4E2
+NKF-AEC
+pyaec
+.goutputstream-OUL4E2

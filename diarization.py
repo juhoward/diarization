@@ -112,7 +112,7 @@ for i in range(len(groups)):
   with open('./content/' + str(i)+'.json', "w") as outfile:
     json.dump(result, outfile, indent=4)
 
-speakers = {'SPEAKER_00':('Speaker_00', '#e1ffc7', 'darkgreen'), 'SPEAKER_01':('Speaker_01', 'white', 'darkorange') }
+speakers = {'SPEAKER_00':('SPEAKER_00', '#e1ffc7', 'darkgreen'), 'SPEAKER_01':('SPEAKER_01', 'white', 'darkorange') }
 def_boxclr = 'white'
 def_spkrclr = 'orange'
 
