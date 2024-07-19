@@ -19,7 +19,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     model = AutoModelForCausalLM.from_pretrained(args.model_id,
-                                                quantization_config=bnb_config,
+                                                # quantization_config=bnb_config,
                                                 device_map="auto",
                                                 use_flash_attention_2=True,
                                                 trust_remote_code=True,
